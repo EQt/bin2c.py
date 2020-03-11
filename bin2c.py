@@ -44,16 +44,13 @@ def output_bin(in_name, h, c, block_size=16, indent="\t"):
     print("extern const size_t {}_size;".format(symbol_name), file=h)
     print("const unsigned char {}_start[] = {{".format(symbol_name), file=c)
     with open(in_name, "rb") as i:
-        while True:
-            block = i.read(block_size)
+        block = i.read(block_size)
+        while block:
             print(indent,
                   (" ".join("0x{:02X}," for _ in range(len(block))))\
-                    .format(*struct.unpack("B" * len(block), block)),
+                  .format(*struct.unpack("B" * len(block), block)),
                   sep="", file=c)
-            if len(block) < block_size:
-                if len(block):
-                    print("", file=c)
-                break
+            block = i.read(block_size)
     print("};", file=c)
     print("const size_t {0}_size = sizeof({0}_start);".format(symbol_name), file=c)
 
