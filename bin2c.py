@@ -46,20 +46,14 @@ def output_bin(in_name, h, c, block_size=16):
     with open(in_name, "rb") as i:
         while True:
             block = i.read(block_size)
+            print("\t",
+                  (" ".join("0x{:02X}," for _ in range(len(block))))\
+                    .format(*struct.unpack("B" * len(block), block)),
+                  sep="", file=c)
             if len(block) < block_size:
                 if len(block):
-                    c.write("\t")
-                    for b in block:
-                        # Python 2/3 compat
-                        if type(b) is str:
-                            b = ord(b)
-                        c.write("0x{:02X}, ".format(b))
                     print("", file=c)
                 break
-            print("\t",
-                  (" ".join("0x{:02X}," for _ in range(block_size)))\
-                    .format(*struct.unpack("B" * block_size, block)),
-                  sep="", file=c)
     print("};", file=c)
     print("const size_t {0}_size = sizeof({0}_start);".format(symbol_name), file=c)
 
