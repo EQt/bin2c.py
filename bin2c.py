@@ -67,20 +67,16 @@ def output_bin(in_name, h, c, block_size=16):
 
 
 def output_set(out_name, in_names, block_size=16):
-    h = open(out_name + ".h", "w")
-    hname = re.sub(r"\W", "_", out_name).upper()
-    h.write("#ifndef _{0}_H\n#define _{0}_H\n".format(hname))
-    h.write(header)
+    with open(out_name + ".h", "w") as h, open(out_name + ".c", "w") as c:
+        hname = re.sub(r"\W", "_", out_name).upper()
+        h.write("#ifndef _{0}_H\n#define _{0}_H\n".format(hname))
+        h.write(header)
 
-    c = open(out_name + ".c", "w")
-    c.write(header)
+        c.write(header)
 
-    for in_name in in_names:
-        output_bin(in_name, h, c, block_size=block_size)
-
-    h.write("\n#endif\n")
-    h.close()
-    c.close()
+        for in_name in in_names:
+            output_bin(in_name, h, c, block_size=block_size)
+        h.write("\n#endif\n")
 
 
 def _main():
